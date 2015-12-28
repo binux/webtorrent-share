@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.13/vue.min.js"></script>
+  </head>
+
+  <body>
+    <div id='app'>
+      <label for="magnet">info_hash / magnetUri: </label>
+      <input name="magnet" v-model="magnet" />
+      <button v-on:click="go">go</button>
+      <hr />
+      <p id="info-window">
+        <span>downloaded: </span> <span>{{ downloaded }}</span>
+        <span>download speed: </span> <span>{{ downloadSpeed }}</span>
+        <span>progress: </span><span>{{ progress }}</span>
+        <span>timeRemaining: </span><span>{{ timeRemaining }}</span>
+        <span>uploaded: </span><span>{{ uploaded }}</span>
+        <span>upload speed: </span><span>{{ uploadSpeed }}</span>
+        <span>numPeers: </span><span>{{ numPeers }}</span>
+        <span>connected: </span> <span>{{ connected }}</span>
+      </p>
+      <hr />
+      <section id="preview">
+      </section>
+    </div>
+  </body>
+  <script src="/bundle.js"></script>
+</html>
+<!-- vim: set et sw=2 ts=2 sts=2 ff=unix fenc=utf8: -->
+

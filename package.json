@@ -1,0 +1,26 @@
+{
+  "name": "bittorrent2web",
+  "description": "",
+  "version": "0.0.1",
+  "author": {
+    "name": "Binux",
+    "email": "roy@binux.me",
+    "url": "http://binux.me"
+  },
+  "dependencies": {
+    "webtorrent": "^0.63.2",
+    "bittorrent-tracker": "^6.3.4"
+  },
+  "keywords": [
+    "bittorrent",
+    "webrtc",
+    "p2p",
+    "video"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "browserify index.js > bundle.js",
+    "start": "node server"
+  }
+}
+
