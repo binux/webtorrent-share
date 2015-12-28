@@ -8,7 +8,7 @@
     "url": "http://binux.me"
   },
   "dependencies": {
-    "webtorrent": "^0.63.2",
+    "webtorrent-hybrid": "^0.39.0",
     "bittorrent-tracker": "^6.3.4"
   },
   "keywords": [

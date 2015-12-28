@@ -3,7 +3,7 @@
 //         http://binux.me
 // Created on 2015-12-28 11:50:37
 
-var WebTorrent = require('webtorrent')
+//var WebTorrent = require('webtorrent')
 
 var client = new WebTorrent()
 
@@ -12,7 +12,7 @@ var torrent = null;
 var info_window = new Vue({
   el: '#app',
   data: {
-    magnet: 'magnet:?xt=urn:btih:49ade54fca88b2a1941540f5aba7a0a4cf5f3861',
+    magnet: 'magnet:?xt=urn:btih:255349772d2cfe0de07173f1025900e1cc6ecfdd',
   },
   methods: {
     go: function() {
@@ -26,21 +26,28 @@ var info_window = new Vue({
         announce: ['ws://'+window.location.hostname+':8900/announce']
       }, function(t) {
         torrent = t
+        self.update_metric()
         torrent.on('download', function(chunk_size) {
-          self.downloaded = torrent.downloaded
-          self.downloadSpeed = torrent.downloadSpeed()
-          self.progress = torrent.progress
-          self.timeRemaining = torrent.timeRemaining
-          self.uploaded = torrent.uploaded
-          self.uploadSpeed = torrent.uploadSpeed()
-          self.numPeers = torrent.numPeers
-          self.connected = torrent.swarm.numConns
+          self.update_metric()
         })
 
         torrent.files.forEach(function(file) {
           file.appendTo($("#preview").get(0));
         })
       })
+    },
+    update_metric: function() {
+      if (!torrent) {
+        return
+      }
+      this.downloaded = torrent.downloaded
+      this.downloadSpeed = torrent.downloadSpeed()
+      this.progress = torrent.progress
+      this.timeRemaining = torrent.timeRemaining
+      this.uploaded = torrent.uploaded
+      this.uploadSpeed = torrent.uploadSpeed()
+      this.numPeers = torrent.numPeers
+      this.connected = torrent.swarm.numConns
     }
   }
 })

@@ -4,7 +4,7 @@
 // Created on 2015-12-28 11:29:01
 
 var Server = require('bittorrent-tracker').Server
-var WebTorrent = require('webtorrent')
+var WebTorrent = require('webtorrent-hybrid')
 var client = new WebTorrent({
   dht: false,
   tracker: true
@@ -13,12 +13,19 @@ var client = new WebTorrent({
 client.on('torrent', function(torrent) {
   console.log('added torrent: ' + torrent.magnetURI)
   // select pieces in file streaming order
-  torrent.critical(0, Math.min(3, torrent.pieces.length - 1))
-  for (var i=0; i < self.pieces.length - 1; i += 10) {
-    torrent.select(i * 10, Math.min(i * 10 + 10, torrent.pieces.length - 1), self.pieces.length / 10 - i)
-  }
+  //torrent.critical(0, Math.min(3, torrent.pieces.length - 1))
+  //for (var i=0; i < self.pieces.length - 1; i += 10) {
+    //torrent.select(i * 10, Math.min(i * 10 + 10, torrent.pieces.length - 1), self.pieces.length / 10 - i)
+  //}
   torrent.on('wire', function(wire, addr) {
     console.log('new wire: ' + addr)
+  })
+  torrent.on('download', function(chunkSize){
+    console.log('chunk size: ' + chunkSize);
+    console.log('total downloaded: ' + torrent.downloaded);
+    console.log('download speed: ' + torrent.downloadSpeed());
+    console.log('progress: ' + torrent.progress);
+    console.log('======');
   })
 })
 
@@ -29,11 +36,10 @@ var server = new Server({
   filter: function(info_hash, params, cb) {
     // add to web torrent client here
     console.log('adding torrent: ' + info_hash)
-    console.debug(JSON.stringify(params))
     client.add(info_hash, {
       announce: ["https://tr.bangumi.moe:9696/announce", "http://tr.bangumi.moe:6969/announce"]
     })
-    cb(allowed)
+    cb(true)
   }
 })
 
