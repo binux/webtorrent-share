@@ -5,7 +5,10 @@
 
 //var WebTorrent = require('webtorrent')
 
-var client = new WebTorrent()
+var client = new WebTorrent({
+  dht: false,
+  tracker: true
+})
 
 var torrent = null;
 
@@ -24,6 +27,7 @@ var info_window = new Vue({
 
       client.add(self.magnet, {
         announce: ['ws://'+window.location.hostname+':8900/announce']
+        //announce: ['ws://linode.binux.me:8900/announce']
       }, function(t) {
         torrent = t
         self.update_metric()

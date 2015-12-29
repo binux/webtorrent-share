@@ -3,8 +3,12 @@
 //         http://binux.me
 // Created on 2015-12-28 11:29:01
 
+global.WRTC = require('wrtc')
+global.WEBTORRENT_ANNOUNCE = ["ws://127.0.0.1:8900/announce"]
+//global.WEBTORRENT_ANNOUNCE = [ 'wss://tracker.webtorrent.io', 'wss://tracker.btorrent.xyz' ]
+
 var Server = require('bittorrent-tracker').Server
-var WebTorrent = require('webtorrent-hybrid')
+var WebTorrent = require('webtorrent')
 var client = new WebTorrent({
   dht: false,
   tracker: true
@@ -13,19 +17,15 @@ var client = new WebTorrent({
 client.on('torrent', function(torrent) {
   console.log('added torrent: ' + torrent.magnetURI)
   // select pieces in file streaming order
-  //torrent.critical(0, Math.min(3, torrent.pieces.length - 1))
-  //for (var i=0; i < self.pieces.length - 1; i += 10) {
-    //torrent.select(i * 10, Math.min(i * 10 + 10, torrent.pieces.length - 1), self.pieces.length / 10 - i)
-  //}
+  torrent.critical(0, Math.min(10, torrent.pieces.length - 1))
+  for (var i = 10; i < torrent.pieces.length - 1; i += 10) {
+    torrent.select(i, Math.min(i + 10, torrent.pieces.length - 1), torrent.pieces.length / 10 - i / 10)
+  }
   torrent.on('wire', function(wire, addr) {
     console.log('new wire: ' + addr)
   })
   torrent.on('download', function(chunkSize){
-    console.log('chunk size: ' + chunkSize);
-    console.log('total downloaded: ' + torrent.downloaded);
-    console.log('download speed: ' + torrent.downloadSpeed());
-    console.log('progress: ' + torrent.progress);
-    console.log('======');
+    //console.log('progress: ' + torrent.progress);
   })
 })
 
@@ -37,7 +37,7 @@ var server = new Server({
     // add to web torrent client here
     console.log('adding torrent: ' + info_hash)
     client.add(info_hash, {
-      announce: ["https://tr.bangumi.moe:9696/announce", "http://tr.bangumi.moe:6969/announce"]
+      announce: ["https://tr.bangumi.moe:9696/announce", "http://tr.bangumi.moe:6969/announce", "http://127.0.0.1:8900/announce"]
     })
     cb(true)
   }
@@ -63,7 +63,12 @@ server.listen(8900, '0.0.0.0')
 server.on('start', function (addr) {
   console.log('got start message from ' + addr)
 })
-
-server.on('complete', function (addr) {})
-server.on('update', function (addr) {})
-server.on('stop', function (addr) {})
+server.on('complete', function (addr) {
+  console.log('got complete message from ' + addr)
+})
+server.on('update', function (addr) {
+  console.log('got update message from ' + addr)
+})
+server.on('stop', function (addr) {
+  console.log('got stop message from ' + addr)
+})
