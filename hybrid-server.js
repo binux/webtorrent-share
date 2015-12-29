@@ -5,27 +5,14 @@
 
 var Server = require('bittorrent-tracker').Server
 var WebTorrent = require('webtorrent-hybrid')
+var parseTorrent = require('parse-torrent')
+
 global.WEBTORRENT_ANNOUNCE = ["ws://127.0.0.1:8900/announce"]
 //global.WEBTORRENT_ANNOUNCE = [ 'wss://tracker.webtorrent.io', 'wss://tracker.btorrent.xyz' ]
 
 var client = new WebTorrent({
   dht: false,
   tracker: true
-})
-
-client.on('torrent', function(torrent) {
-  console.log('added torrent: ' + torrent.magnetURI)
-  // select pieces in file streaming order
-  torrent.critical(0, Math.min(10, torrent.pieces.length - 1))
-  for (var i = 10; i < torrent.pieces.length - 1; i += 10) {
-    torrent.select(i, Math.min(i + 10, torrent.pieces.length - 1), torrent.pieces.length / 10 - i / 10)
-  }
-  torrent.on('wire', function(wire, addr) {
-    console.log('new wire: ' + addr)
-  })
-  torrent.on('download', function(chunkSize){
-    //console.log('progress: ' + torrent.progress);
-  })
 })
 
 var server = new Server({
@@ -37,6 +24,25 @@ var server = new Server({
     console.log('adding torrent: ' + info_hash)
     client.add(info_hash, {
       announce: ["https://tr.bangumi.moe:9696/announce", "http://tr.bangumi.moe:6969/announce", "http://127.0.0.1:8900/announce"]
+    }, function(torrent) {
+      console.log('added torrent: ' + torrent.magnetURI)
+      // select pieces in file streaming order
+      torrent.critical(0, Math.min(10, torrent.pieces.length - 1))
+      for (var i = 10; i < torrent.pieces.length - 1; i += 10) {
+        torrent.select(i, Math.min(i + 10, torrent.pieces.length - 1), torrent.pieces.length / 10 - i / 10)
+      }
+      torrent.on('wire', function(wire, addr) {
+        console.log('wire', addr)
+      })
+      torrent.on('done', function() {
+        parsedTorrent = parseTorrent(torrent.metadata)
+        parsedTorrent.announce = []
+        torrent.destroy(function() {
+          client.add(parsedTorrent, function(torrent) {
+            console.log('onseed torrent: ' + torrent.magnetURI)
+          })
+        })
+      })
     })
     cb(true)
   }
@@ -62,12 +68,6 @@ server.listen(8900, '0.0.0.0')
 server.on('start', function (addr) {
   console.log('got start message from ' + addr)
 })
-server.on('complete', function (addr) {
-  console.log('got complete message from ' + addr)
-})
-server.on('update', function (addr) {
-  console.log('got update message from ' + addr)
-})
-server.on('stop', function (addr) {
-  console.log('got stop message from ' + addr)
+server.on('stop', function (addr, params) {
+  console.log('got stop message from ', addr)
 })

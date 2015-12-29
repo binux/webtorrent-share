@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "webtorrent-hybrid": "^0.39.0",
-    "bittorrent-tracker": "^6.3.4"
+    "bittorrent-tracker": "^6.3.4",
+    "parse-torrent": "^5.7.0"
   },
   "keywords": [
     "bittorrent",

@@ -63,3 +63,5 @@ var info_window = new Vue({
     }
   }
 })
+
+setInterval(function() { info_window.update_metric() }, 1000)
