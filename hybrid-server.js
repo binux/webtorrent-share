@@ -3,12 +3,11 @@
 //         http://binux.me
 // Created on 2015-12-28 11:29:01
 
-global.WRTC = require('wrtc')
+var Server = require('bittorrent-tracker').Server
+var WebTorrent = require('webtorrent-hybrid')
 global.WEBTORRENT_ANNOUNCE = ["ws://127.0.0.1:8900/announce"]
 //global.WEBTORRENT_ANNOUNCE = [ 'wss://tracker.webtorrent.io', 'wss://tracker.btorrent.xyz' ]
 
-var Server = require('bittorrent-tracker').Server
-var WebTorrent = require('webtorrent')
 var client = new WebTorrent({
   dht: false,
   tracker: true

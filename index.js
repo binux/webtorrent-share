@@ -16,6 +16,14 @@ var info_window = new Vue({
   el: '#app',
   data: {
     magnet: 'magnet:?xt=urn:btih:255349772d2cfe0de07173f1025900e1cc6ecfdd',
+    downloaded: 0,
+    downloadSpeed: 0,
+    progress: 0,
+    timeRemaining: 0,
+    uploaded: 0,
+    uploadSpeed: 0,
+    numPeers: 0,
+    connected: 0
   },
   methods: {
     go: function() {
