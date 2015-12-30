@@ -5,6 +5,40 @@
 
 //var WebTorrent = require('webtorrent')
 
+// https://gist.github.com/599316527/a0d1300630baa4f82aa1
+var UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+var STEP = 1024;
+
+function format(value, power) {
+    return (value / Math.pow(STEP, power)).toFixed(2) + UNITS[power];
+}
+
+Vue.filter('smart-file-size', {
+    read: function (value) {
+        value = parseFloat(value, 10);
+        for (var i = 0; i < UNITS.length; i++) {
+            if (value < Math.pow(STEP, i)) {
+                if (UNITS[i - 1]) {
+                    return format(value, i - 1);
+                }
+                return value + UNITS[i];
+            }
+        }
+        return format(value, i - 1);
+    },
+    write: function (value, oldValue) {
+        var exp = new RegExp('^(\\d+(?:\\.\\d+)?)(' + UNITS.join('|') +')$', 'i');
+        var ret = value.match(exp);
+        if (ret) {
+            var i = UNITS.indexOf(ret[2].toUpperCase());
+            if (i >= 0) {
+                return parseFloat(ret[1], 10) * Math.pow(STEP, i);
+            }
+        }
+        return oldValue;
+    }
+});
+
 var client = new WebTorrent({
   dht: false,
   tracker: true
@@ -39,12 +73,10 @@ var info_window = new Vue({
       }, function(t) {
         torrent = t
         self.update_metric()
-        torrent.on('download', function(chunk_size) {
-          self.update_metric()
-        })
 
+        $("#preview").html('')
         torrent.files.forEach(function(file) {
-          file.appendTo($("#preview").get(0));
+          file.appendTo($("#preview").get(0))
         })
       })
     },

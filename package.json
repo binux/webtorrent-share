@@ -10,7 +10,8 @@
   "dependencies": {
     "webtorrent-hybrid": "^0.39.0",
     "bittorrent-tracker": "^6.3.4",
-    "parse-torrent": "^5.7.0"
+    "connect": "",
+    "serve-static": ""
   },
   "keywords": [
     "bittorrent",
@@ -18,10 +19,5 @@
     "p2p",
     "video"
   ],
-  "license": "MIT",
-  "scripts": {
-    "build": "browserify index.js > bundle.js",
-    "start": "node server"
-  }
+  "license": "MIT"
 }
-

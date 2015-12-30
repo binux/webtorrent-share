@@ -3,6 +3,12 @@
 //         http://binux.me
 // Created on 2015-12-28 11:29:01
 
+// static file server
+var connect = require('connect');
+var serveStatic = require('serve-static');
+connect().use(serveStatic(__dirname)).listen(8000);
+
+// bt hybrid server
 var Server = require('bittorrent-tracker').Server
 var WebTorrent = require('webtorrent-hybrid')
 var parseTorrent = require('parse-torrent')
@@ -67,7 +73,4 @@ server.listen(8900, '0.0.0.0')
 
 server.on('start', function (addr) {
   console.log('got start message from ' + addr)
-})
-server.on('stop', function (addr, params) {
-  console.log('got stop message from ', addr)
 })
