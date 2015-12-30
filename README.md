@@ -16,8 +16,8 @@ Installation
 * visite: `http://localhost:8000/`
 
 
-Known Issue
------------
+Known Issues
+------------
 
 * server will randomly Segmentation fault (core dumped)
 * socket connections will randomly hang

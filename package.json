@@ -10,6 +10,7 @@
   "dependencies": {
     "webtorrent-hybrid": "^0.39.0",
     "bittorrent-tracker": "^6.3.4",
+    "parse-torrent": "",
     "connect": "",
     "serve-static": ""
   },
