@@ -8,11 +8,24 @@
     "url": "http://binux.me"
   },
   "dependencies": {
-    "webtorrent-hybrid": "",
-    "bittorrent-tracker": "",
-    "parse-torrent": "",
-    "connect": "",
-    "serve-static": ""
+    "webtorrent-hybrid": "^1.0.2",
+    "webtorrent": "^0.91.2",
+    "express": "",
+    "glob": ""
+  },
+  "devDependencies": {
+    "json-loader": "",
+    "css-loader": "^0.22.0",
+    "html-loader": "^0.3.0",
+    "node-libs-browser": "^0.5.2",
+    "style-loader": "^0.12.3",
+    "stylus-loader": "^1.2.1",
+    "webpack": "^1.11.0",
+    "webpack-dev-server": "^1.12.1"
+  },
+  "scripts": {
+    "dev": "webpack-dev-server --inline --hot --quiet",
+    "build": "webpack -p"
   },
   "keywords": [
     "bittorrent",
