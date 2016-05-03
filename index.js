@@ -69,7 +69,6 @@ var info_window = new Vue({
 
       client.add(self.magnet, {
         announce: ['ws://'+window.location.hostname+':8900/announce']
-        //announce: ['ws://linode.binux.me:8900/announce']
       }, function(t) {
         torrent = t
         self.update_metric()
@@ -85,13 +84,13 @@ var info_window = new Vue({
         return
       }
       this.downloaded = torrent.downloaded
-      this.downloadSpeed = torrent.downloadSpeed()
+      this.downloadSpeed = torrent.downloadSpeed
       this.progress = torrent.progress
       this.timeRemaining = torrent.timeRemaining
       this.uploaded = torrent.uploaded
-      this.uploadSpeed = torrent.uploadSpeed()
+      this.uploadSpeed = torrent.uploadSpeed
       this.numPeers = torrent.numPeers
-      this.connected = torrent.swarm.numConns
+      this.connected = torrent.numConns
     }
   }
 })

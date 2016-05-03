@@ -9,17 +9,17 @@ var serveStatic = require('serve-static');
 connect().use(serveStatic(__dirname)).listen(8000);
 
 // bt hybrid server
-var Server = require('bittorrent-tracker').Server
-var WebTorrent = require('webtorrent-hybrid')
-var parseTorrent = require('parse-torrent')
+var Server = require('bittorrent-tracker').Server;
+var WebTorrent = require('webtorrent-hybrid');
+var parseTorrent = require('parse-torrent');
 
-global.WEBTORRENT_ANNOUNCE = ["ws://127.0.0.1:8900/announce"]
+global.WEBTORRENT_ANNOUNCE = ["ws://127.0.0.1:8900/announce"];
 //global.WEBTORRENT_ANNOUNCE = [ 'wss://tracker.webtorrent.io', 'wss://tracker.btorrent.xyz' ]
 
 var client = new WebTorrent({
   dht: false,
   tracker: true
-})
+});
 
 var server = new Server({
   udp: false,
@@ -29,14 +29,17 @@ var server = new Server({
     // add to web torrent client here
     console.log('adding torrent: ' + info_hash)
     client.add(info_hash, {
-      announce: ["https://tr.bangumi.moe:9696/announce", "http://tr.bangumi.moe:6969/announce", "http://127.0.0.1:8900/announce"]
+      announce: ["https://tr.bangumi.moe:9696/announce", "http://tr.bangumi.moe:6969/announce",
+        "udp://tr.bangumi.moe:6969/announce", "ws://127.0.0.1:8900/announce"]
     }, function(torrent) {
       console.log('added torrent: ' + torrent.magnetURI)
+
       // select pieces in file streaming order
       torrent.critical(0, Math.min(10, torrent.pieces.length - 1))
       for (var i = 10; i < torrent.pieces.length - 1; i += 10) {
         torrent.select(i, Math.min(i + 10, torrent.pieces.length - 1), torrent.pieces.length / 10 - i / 10)
       }
+
       torrent.on('wire', function(wire, addr) {
         console.log('wire', addr)
       })
@@ -49,6 +52,13 @@ var server = new Server({
           })
         })
       })
+      // torrent.on('download', function(chunkSize){
+      //   console.log('chunk size: ' + chunkSize);
+      //   console.log('total downloaded: ' + torrent.downloaded);
+      //   console.log('download speed: ' + torrent.downloadSpeed);
+      //   console.log('progress: ' + torrent.progress);
+      //   console.log('======');
+      // })
     })
     cb(true)
   }
@@ -56,7 +66,7 @@ var server = new Server({
 
 server.on('error', function (err) {
   // fatal server error!
-  console.log(err.message)
+  console.log('error: ' + err.message)
 })
 
 server.on('warning', function (err) {
