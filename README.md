@@ -1,7 +1,7 @@
 bittorrent2web (concept demo)
 =============================
 
-Download bittorrent resources from browser without nothing!
+Download bittorrent resources from browser with nothing!
 
 A bitttorent network to webtorrent hybrid server. Base on [webtorrent](https://github.com/feross/webtorrent)
 
