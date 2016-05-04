@@ -42,7 +42,7 @@
       process.exit(1);
     }
 
-    files = files.slice(0, 1)
+    //files = files.slice(0, 1)
     files.forEach(function(file) {
       client.seed(file, function (torrent) {
         console.log(`seeding ${file} ${torrent.infoHash}`)
