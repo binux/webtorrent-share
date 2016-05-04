@@ -12,6 +12,7 @@
   var path = require('path')
   var glob = require('glob')
   var WebTorrent = require('webtorrent-hybrid')
+  var argv = require('minimist')(process.argv.slice(2));
 
   // env check
   //if (!!!WebTorrent.WEBRTC_SUPPORT) {
@@ -20,6 +21,11 @@
   //}
 
   var config = JSON.parse(fs.readFileSync('config.json'))
+  if (argv['_'] && argv['_'].length)
+    config.glob = argv['_'][0]
+  for (var k in argv)
+    config[k] = argv[k]
+
   var client = new WebTorrent({
     dht: config.dht,
     tracker: config.tracker,

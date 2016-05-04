@@ -1,26 +1,13 @@
-bittorrent2web (concept demo)
-=============================
+folder share to webtorrent network
+==================================
 
-Download bittorrent resources from browser with nothing!
-
-A bitttorent network to webtorrent hybrid server. Base on [webtorrent](https://github.com/feross/webtorrent)
+share folder to [webtorrent](https://github.com/feross/webtorrent)
 
 
-Installation
-------------
+Usage
+-----
 
-* require nodejs 0.12
-* prepare the [prerequisites](https://www.npmjs.com/package/wrtc#prerequisites) for wrtc
-* `npm install`
-* node hybrid-server
-* visite: `http://localhost:8000/`
-
-
-Known Issues
-------------
-
-* server will randomly Segmentation fault (core dumped)
-* socket connections will randomly hang
+`node app.js`
 
 License
 -------
