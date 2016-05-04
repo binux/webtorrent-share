@@ -6,7 +6,7 @@
 (function(){
   'use strict';
   //var Vue = require('vue')
-  //var WebTorrent = require('webtorrent')
+  var WebTorrent = require('webtorrent')
 
   // https://gist.github.com/599316527/a0d1300630baa4f82aa1
   var UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];

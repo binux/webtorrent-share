@@ -21,8 +21,8 @@
 
   var config = JSON.parse(fs.readFileSync('config.json'))
   var client = new WebTorrent({
-    dht: false,
-    tracker: true
+    dht: config.dht,
+    tracker: config.tracker,
   })
 
   // seeding

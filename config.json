@@ -6,5 +6,7 @@
       "wss://tracker.btorrent.xyz",
       "wss://tracker.openwebtorrent.com",
       "wss://tracker.fastcast.nz"
-  ]
+  ],
+  "tracker": true,
+  "dht": false
 }
