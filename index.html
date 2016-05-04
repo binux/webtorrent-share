@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <title></title>
@@ -8,39 +8,53 @@
     <![endif]-->
 
     <meta name="description" content="">
-    <meta name="author" content="">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.13/vue.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/webtorrent/latest/webtorrent.min.js"></script>
-    <style>
-      input[name=magnet] {
-        width: 50em;
-      }
-    </style>
+    <meta name="author" content="binux">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.21/vue.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.7.0/vue-resource.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/0.7.13/vue-router.min.js"></script>
   </head>
 
   <body>
+
     <div id='app'>
-      <label for="magnet">info_hash / magnetUri: </label>
-      <input name="magnet" v-model="magnet" />
-      <button @click="go">go</button>
-      <hr />
-      <p id="info-window">
-        <span>downloaded: </span> <span>{{ downloaded | smart-file-size }}</span>
-        <span>download speed: </span> <span>{{ downloadSpeed | smart-file-size }}/s</span>
-        <span>progress: </span><span>{{ (progress * 100).toFixed(1) }}%</span>
-        <span>timeRemaining: </span><span>{{ (timeRemaining / 1000).toFixed(0) }}s</span>
-        <span>uploaded: </span><span>{{ uploaded | smart-file-size }}</span>
-        <span>upload speed: </span><span>{{ uploadSpeed | smart-file-size }}/s</span>
-        <span>numPeers: </span><span>{{ numPeers }}</span>
-        <span>connected: </span> <span>{{ connected }}</span>
-      </p>
-      <hr />
-      <section id="preview">
-      </section>
+      <h1><a v-link="{ path: '/' }">{{ glob }}</a></h1>
+      <hr>
+      <router-view></router-view>
     </div>
+
+    <script type="x/template" id="filelist-template">
+      <ul>
+        <li v-for="file in files">
+          <a v-link="{ name: 'video', params: { infohash: file.infoHash } }">{{ file.name }}</a>
+        </li>
+      </ul>
+    </script>
+
+    <script type="x/template" id="video-template">
+      <p v-show="torrent===null">
+        infohash: {{ $route.params.infohash }}
+        grabing meta...
+      </p>
+      <div v-show="torrent">
+      <dl>
+        <dt>infoHash</dt>
+        <dd><a href="{{ torrent.magnetURI }}">{{ torrent.infoHash }}</a></dd>
+
+        <dt>downloaded</dt>
+        <dd>{{ torrent.downloaded | smart-file-size }}@{{ downloadSpeed | smart-file-size }}/s FROM {{ torrent.numPeers }}conn ({{ (torrent.progress * 100).toFixed(1) }}%)</dd>
+
+        <dt>timeRemaining</dt>
+        <dd>{{ (timeRemaining / 1000).toFixed(0) }}s</dd>
+
+        <dt>uploaded</dt>
+        <dd>{{ torrent.uploaded | smart-file-size }}@{{ uploadSpeed | smart-file-size }}/s</dd>
+
+        <div id=video-view></div>
+      </div>
+    </script>
+
+    <script src="bundle.js"></script>
   </body>
-  <script src="/index.js"></script>
 </html>
 <!-- vim: set et sw=2 ts=2 sts=2 ff=unix fenc=utf8: -->
 

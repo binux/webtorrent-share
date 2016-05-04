@@ -1,0 +1,12 @@
+{
+  "port": 3333,
+  "glob": "/Users/binux/Downloads/*.mp4",
+  "announce": [
+      "wss://tracker.webtorrent.io",
+      "wss://tracker.btorrent.xyz",
+      "wss://tracker.openwebtorrent.com",
+      "wss://tracker.fastcast.nz"
+  ],
+  "tracker": true,
+  "dht": false
+}
