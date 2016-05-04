@@ -34,6 +34,7 @@
     dht: config.dht,
     tracker: config.tracker,
   })
+  console.log(config)
 
   // seeding
   glob(config.glob, function(er, files) {
@@ -44,9 +45,11 @@
 
     //files = files.slice(0, 1)
     files.forEach(function(file) {
-      client.seed(file, function (torrent) {
-        console.log(`seeding ${file} ${torrent.infoHash}`)
-      })
+      if (fs.statSync(file).isFile()) {
+        client.seed(file, function (torrent) {
+          console.log(`seeding ${file} ${torrent.infoHash}`)
+        })
+      }
     })
   })
 
