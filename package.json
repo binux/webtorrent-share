@@ -12,7 +12,8 @@
     "webtorrent": "^0.91.2",
     "express": "",
     "glob": "",
-    "minimist": ""
+    "minimist": "",
+    "xvfb": ""
   },
   "devDependencies": {
     "json-loader": "",

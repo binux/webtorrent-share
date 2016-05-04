@@ -6,6 +6,10 @@
  */
 (function(){
   'use strict';
+
+  var Xvfb = require('xvfb')
+  var xvfb = new Xvfb()
+  xvfb.startSync()
   
   var os = require('os')
   var fs = require('fs')
