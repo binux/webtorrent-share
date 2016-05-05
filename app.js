@@ -21,8 +21,19 @@
 
 	var database = {}
 
+  try {
+    var database_cache = JSON.parse(fs.readFileSync('database.json'))
+  } catch(e) {
+    console.error(e)
+    var database_cache = {}
+  }
+
   function store_database() {
-    fs.writeFileSync('database.json', JSON.stringify(database))
+    var database_cache = {}
+    for (let k in database) {
+      database_cache[database[k].file] = parseTorrent.toTorrentFile(database[k].torrent)
+    }
+    fs.writeFileSync('database.json', JSON.stringify(database_cache))
   }
 
   // env check
@@ -52,18 +63,29 @@
         return
       }
 
-      createTorrent(file, {
-        announceList: config.announce,
-      }, (err, torrent) => {
-        torrent = parseTorrent(torrent)
-        console.log(`seeding ${file} ${torrent.infoHash}`)
+      if (database_cache[file] !== undefined) {
+        var torrent = parseTorrent(new Buffer(database_cache[file]))
+        console.log(`reloaded ${file} ${torrent.infoHash}`)
 
         database[torrent.infoHash] = {
           file: file,
-          torrent: torrent,
+          torrent: torrent
         }
         store_database()
-      })
+      } else {
+        createTorrent(file, {
+          announceList: config.announce,
+        }, (err, torrent) => {
+          var torrent = parseTorrent(torrent)
+          console.log(`seeding ${file} ${torrent.infoHash}`)
+
+          database[torrent.infoHash] = {
+            file: file,
+            torrent: torrent,
+          }
+          store_database()
+        })
+      }
     })
   })
 
