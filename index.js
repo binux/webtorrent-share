@@ -6,7 +6,7 @@
 (function(){
   'use strict';
   //var Vue = require('vue')
-  var WebTorrent = require('webtorrent')
+  //var WebTorrent = require('webtorrent')
 
   // https://gist.github.com/599316527/a0d1300630baa4f82aa1
   var UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
@@ -77,7 +77,7 @@
       }
     },
     init: function() {
-      this.$http.get('/client').then(function(response) {
+      this.$http.get('/files').then(function(response) {
         this.$set('files', response.data.files)
       })
     },
@@ -97,10 +97,11 @@
     },
     init: function() {
       var self = this;
-      this.$set('infohash', this.$route.params.infohash)
-      client.add(this.$data.infohash, {
+      var infohash = this.$route.params.infohash
+      this.$set('infohash', infohash)
+      client.add(`${location.origin}/torrent/${infohash}`, {
         announce: announce,
-      }, function(torrent) {
+      }, (torrent) => {
         self.$set('torrent', torrent)
         torrent.files.forEach(function(file) {
           file.appendTo('#video-view', function(err) {

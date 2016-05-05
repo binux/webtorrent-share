@@ -8,8 +8,9 @@
     "url": "http://binux.me"
   },
   "dependencies": {
-    "webtorrent-hybrid": "^1.0.2",
-    "webtorrent": "^0.91.2",
+    "webtorrent": "^0.92.0",
+    "create-torrent": "^3.24.5",
+    "parse-torrent": "^5.7.3",
     "express": "",
     "glob": "",
     "minimist": "",
