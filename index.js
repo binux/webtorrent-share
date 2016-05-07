@@ -44,20 +44,97 @@
 
   function renderTo(file, elem, cb) {
     if (typeof elem === 'string') elem = document.querySelector(elem)
+    var infohash = file._torrent && file._torrent.infoHash
 
     if (file.name.match(/.(mp4|m4v|webm|mkv)$/i)) {
+      var room = new Wilddog(`https://danmu-binux.wilddogio.com/danmu/${infohash}`)
+      var danmu_ready = false
+      var video_ready = false
+
       // video
       var inst = ABP.create(elem, {
-        'src': 'about:blank',
       });
+      window.inst = inst
+
+      // load danmu
+      inst.createPopup("loading danmu...")
+      room.once('value', function(snap) {
+        var my_post = null
+        var keys = Object.keys(snap.val() || {});
+        var lastIdInSnapshot = keys[keys.length-1]
+
+        var data = []
+        snap.forEach(function(s) {
+          data.push(s.val())
+        })
+        inst.cmManager.load(data)
+
+        danmu_ready = true
+        inst.removePopup()
+        inst.createPopup("danmu loaded", 2000)
+        if (video_ready) {
+          inst.cmManager.startTimer()
+        }
+
+        var query = room.orderByKey()
+        if (lastIdInSnapshot) {
+          query = query.startAt(lastIdInSnapshot)
+        }
+        query.on("child_added", function(snap) {
+          if(snap.key() === lastIdInSnapshot) { return }
+          var data = snap.val()
+
+          if (data.text == my_post) {
+            data.border = true
+            inst.cmManager.send(data)
+          } else if (Math.abs(inst.video.currentTime * 1000 - data.stime) < 10000) {
+            inst.cmManager.send(data)
+          } else {
+            inst.cmManager.insert(data)
+          }
+        })
+
+        // send danmu
+        inst.txtText.addEventListener('keypress', function(e) {
+          if (e.keyCode != 13) {
+            return
+          }
+
+          var data = {
+            mode: 1,
+            stime: parseInt(inst.video.currentTime * 1000), 
+            text: inst.txtText.value
+          }
+          if (!!!data.text) {
+            return
+          }
+
+          my_post = data.text
+          room.push(data, function(err) {
+            if (err) {
+              inst.createPopup('send danmu error: ' + err, 3000)
+            } else {
+              inst.txtText.value = ''
+            }
+          })
+        })
+      })
 
       inst.video.addEventListener('loadedmetadata', function() {
         document.querySelector('#video-view .ABP-Unit').style.width = '' + inst.video.videoWidth + 'px'
         document.querySelector('#video-view .ABP-Unit').style.height = '' + (inst.video.videoHeight + inst.txtText.clientHeight + inst.barHitArea.clientHeight) + 'px'
+        inst.cmManager.setBounds()
       })
 
       inst.video.addEventListener('play', function() {
         inst.btnPlay.className = "button ABP-Play ABP-Pause"
+      })
+
+      inst.video.addEventListener('playing', function() {
+        video_ready = true
+        if (danmu_ready) {
+          inst.cmManager.startTimer()
+        }
       })
 
       inst.video.addEventListener('pause', function() {
