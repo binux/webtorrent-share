@@ -42,6 +42,34 @@
     }
   });
 
+  function renderTo(file, elem, cb) {
+    if (typeof elem === 'string') elem = document.querySelector(elem)
+
+    if (file.name.match(/.(mp4|m4v|webm|mkv)$/i)) {
+      // video
+      var inst = ABP.create(elem, {
+        'src': 'about:blank',
+      });
+
+      inst.video.addEventListener('loadedmetadata', function() {
+        document.querySelector('#video-view .ABP-Unit').style.width = '' + inst.video.videoWidth + 'px'
+        document.querySelector('#video-view .ABP-Unit').style.height = '' + (inst.video.videoHeight + inst.txtText.clientHeight + inst.barHitArea.clientHeight) + 'px'
+      })
+
+      inst.video.addEventListener('play', function() {
+        inst.btnPlay.className = "button ABP-Play ABP-Pause"
+      })
+
+      inst.video.addEventListener('pause', function() {
+        inst.btnPlay.className = "button ABP-Play"
+      })
+
+      file.renderTo(inst.video, cb)
+    } else {
+      file.renderTo(elem, cb)
+    }
+  }
+
   // webtorrent client
   var client = new WebTorrent
   window.client = client
@@ -104,8 +132,8 @@
       }, (torrent) => {
         self.$set('torrent', torrent)
         torrent.files.forEach(function(file) {
-          file.appendTo('#video-view', function(err) {
-            if (err) throw err
+          renderTo(file, '#video-view', function(err) {
+            if (err) console.error(err)
           })
         })
         torrent.on('download', function() {
