@@ -13,6 +13,7 @@ Features
 * **视频边下边播，支持弹幕！**
 * 自动检测文件添加删除变动
 
+
 * Share files via [WebTorrent] p2p network.
 * Video streaming with [danmu](https://en.wikipedia.org/wiki/Bilibili#Features)!!
 * Watch files add/change/remove on specified path.
