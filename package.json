@@ -1,22 +1,21 @@
 {
-  "name": "bittorrent2web",
-  "description": "",
-  "version": "0.0.1",
+  "name": "webtorrent-share",
+  "description": "share files via webtorrent",
+  "version": "0.1.0",
   "author": {
     "name": "Binux",
     "email": "roy@binux.me",
-    "url": "http://binux.me"
+    "url": "http://github.com/binux"
   },
   "dependencies": {
-    "webtorrent": "^0.92.0",
     "create-torrent": "^3.24.5",
     "parse-torrent": "^5.7.3",
-    "express": "",
-    "glob": "",
-    "minimist": "",
-    "chokidar": "",
-    "debounce": "",
-    "cookie-parser", ""
+    "minimist": "^1.2.0",
+    "glob": "^5.0.15",
+    "chokidar": "^1.4.3",
+    "express": "^4.13.4",
+    "cookie-parser": "^1.4.1",
+    "debounce": "^1.0.0"
   },
   "devDependencies": {
     "json-loader": "",
@@ -28,15 +27,20 @@
     "webpack": "^1.11.0",
     "webpack-dev-server": "^1.12.1"
   },
-  "scripts": {
-    "dev": "webpack-dev-server --inline --hot --quiet",
-    "build": "webpack -p"
+  "bin": {
+    "webtorrent-share": "./app.js"
   },
   "keywords": [
     "bittorrent",
     "webrtc",
     "p2p",
-    "video"
+    "video",
+    "webtorrent",
+    "file share"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/binux/webtorrent-share.git"
+  }
 }

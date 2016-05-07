@@ -24,7 +24,7 @@
 	var database = {}
 
   try {
-    var database_cache = JSON.parse(fs.readFileSync('database.json'))
+    var database_cache = JSON.parse(fs.readFileSync(os.tmpdir()+'database.json'))
   } catch(e) {
     //console.error(e)
     var database_cache = {}
@@ -35,7 +35,7 @@
     for (let k in database) {
       database_cache[database[k].file] = parseTorrent.toTorrentFile(database[k].torrent)
     }
-    fs.writeFileSync('database.json', JSON.stringify(database_cache))
+    fs.writeFileSync(os.tmpdir()+'database.json', JSON.stringify(database_cache))
   }
 
   // env check
@@ -135,7 +135,7 @@
   var cookieParser = require('cookie-parser')
   var app = express()
 
-  app.use(express.static('./'))
+  app.use(express.static(__dirname))
   app.use(cookieParser(config.glob))
 
   app.get('/files', (req, res) => {

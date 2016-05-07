@@ -17,6 +17,23 @@
     <script src="http://jabbany.me/ABPlayerHTML5/build/js/CommentCoreLibrary.min.js"></script>
     <script src="http://jabbany.me/ABPlayerHTML5/build/js/ABPlayer.min.js"></script>
     <script src = "https://cdn.wilddog.com/js/client/current/wilddog.js" ></script>
+
+    <style>
+      span.size {
+        float: right;
+      }
+
+      footer {
+        position: absolute;
+        height: 30px;
+        width: 100%;
+        bottom: 0;
+        margin: 10px 0;
+      }
+      .text-center {
+        text-align: center;
+      }
+    </style>
   </head>
 
   <body>
@@ -27,11 +44,18 @@
       <router-view></router-view>
     </div>
 
+    <footer>
+      <div class="container">
+        <p class="text-center">a <a href="https://github.com/binux/" target="_blank">Binux</a>'s project.</p>
+      </div>
+    </footer>
+
+
     <script type="x/template" id="filelist-template">
       <ul>
         <li v-for="file in files">
           <a v-link="{ name: 'video', params: { infohash: file.infoHash } }">{{ file.name }}</a>
-          <span style="float: right">{{ file.length | smart-file-size }}</span>
+          <span class="size">{{ file.length | smart-file-size }}</span>
         </li>
       </ul>
     </script>
@@ -42,24 +66,21 @@
         grabing meta...
       </p>
       <div v-show="torrent">
-      <dl>
         <h2>{{ torrent.files[0].name }}</h2>
+        <dl>
+          <dt>infoHash</dt>
+          <dd><a href="{{ torrent.magnetURI }}">{{ torrent.infoHash }}</a></dd>
 
-        <dt>infoHash</dt>
-        <dd><a href="{{ torrent.magnetURI }}">{{ torrent.infoHash }}</a></dd>
+          <dt>downloaded</dt>
+          <dd>{{ torrent.downloaded | smart-file-size }}@{{ downloadSpeed | smart-file-size }}/s FROM {{ torrent.numPeers }}conn ({{ (torrent.progress * 100).toFixed(1) }}%)</dd>
+          <dd v-show="download_link"><a id="save-link" href="{{ download_link }}" download="{{ torrent.files[0].name }}">save</a></dd>
 
-        <dt>downloaded</dt>
-        <dd>{{ torrent.downloaded | smart-file-size }}@{{ downloadSpeed | smart-file-size }}/s FROM {{ torrent.numPeers }}conn ({{ (torrent.progress * 100).toFixed(1) }}%)</dd>
-        <dd v-show="download_link"><a id="save-link" href="{{ download_link }}" download="{{ torrent.files[0].name }}">save</a></dd>
+          <dt>timeRemaining</dt>
+          <dd>{{ (timeRemaining / 1000).toFixed(0) }}s</dd>
 
-        <dt>timeRemaining</dt>
-        <dd>{{ (timeRemaining / 1000).toFixed(0) }}s</dd>
-
-        <dt>uploaded</dt>
-        <dd>{{ torrent.uploaded | smart-file-size }}@{{ uploadSpeed | smart-file-size }}/s</dd>
-
-        <p></p>
-
+          <dt>uploaded</dt>
+          <dd>{{ torrent.uploaded | smart-file-size }}@{{ uploadSpeed | smart-file-size }}/s</dd>
+        </dl>
         <div id=video-view></div>
       </div>
     </script>

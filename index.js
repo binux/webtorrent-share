@@ -46,8 +46,8 @@
     if (typeof elem === 'string') elem = document.querySelector(elem)
     var infohash = file._torrent && file._torrent.infoHash
 
-    if (file.name.match(/.(mp4|m4v|webm|mkv)$/i)) {
-      var room = new Wilddog(`https://danmu-binux.wilddogio.com/danmu/${infohash}`)
+    if (config.danmu_server && file.name.match(/.(mp4|m4v|webm|mkv)$/i)) {
+      var room = new Wilddog(`${config.danmu_server}/${infohash}`)
       var danmu_ready = false
       var video_ready = false
 
@@ -149,13 +149,15 @@
 
   // webtorrent client
   var client = new WebTorrent
-  window.client = client
-  var announce = [
-    "wss://tracker.webtorrent.io",
-    "wss://tracker.btorrent.xyz",
-    "wss://tracker.openwebtorrent.com",
-    "wss://tracker.fastcast.nz"
-  ]
+  //window.client = client
+  var config = {
+    "announce": [
+      "wss://tracker.webtorrent.io",
+      "wss://tracker.btorrent.xyz",
+      "wss://tracker.openwebtorrent.com",
+      "wss://tracker.fastcast.nz"
+    ]
+  }
 
   // app
   var App = Vue.extend({
@@ -167,9 +169,9 @@
     },
     init: function() {
       this.$http.get('/config').then(function(response) {
+        config = response.data
         this.$set('glob', response.data.glob)
         document.title = response.data.glob
-        announce = response.data.announce
       })
     }
   })
@@ -207,7 +209,7 @@
       var infohash = this.$route.params.infohash
       this.$set('infohash', infohash)
       client.add(`${location.origin}/torrent/${infohash}`, {
-        announce: announce,
+        announce: config.announce,
       }, (torrent) => {
         self.$set('torrent', torrent)
         document.title = torrent.files[0].name
