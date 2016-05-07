@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
  * app.js
  * Copyright (C) 2016 Binux <roy@binux.me>
