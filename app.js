@@ -112,7 +112,7 @@
   })
   .on('change', path => {
     if (file_debounce[path])
-      file_debounce[path](event.path)
+      file_debounce[path](path)
   })
   .on('unlink', path => {
     var deleted = false
