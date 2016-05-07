@@ -45,7 +45,7 @@
     //process.exit(1);
   //}
 
-  var config = JSON.parse(fs.readFileSync(__dirname+'config.json'))
+  var config = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'config.json')))
   if (argv['_'] && argv['_'].length)
     config.glob = argv['_'][0]
   for (var k in argv)
