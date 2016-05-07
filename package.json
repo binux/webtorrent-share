@@ -15,7 +15,7 @@
     "glob": "",
     "minimist": "",
     "xvfb": "",
-    "gulp-watch": "",
+    "chokidar": "",
     "debounce": ""
   },
   "devDependencies": {

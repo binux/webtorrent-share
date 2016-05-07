@@ -18,7 +18,7 @@
   var createTorrent = require('create-torrent')
   var parseTorrent = require('parse-torrent')
   var argv = require('minimist')(process.argv.slice(2))
-  var watch = require('gulp-watch')
+  var watch = require('chokidar')
   var debounce = require('debounce')
 
 	var database = {}
@@ -101,28 +101,31 @@
 
   // watch
   var file_debounce = {}
-  watch(config.glob, {
-    events: ['add', 'change', 'unlink'],
-  }, (event) => {
-    if (event.event == 'add') {
-      file_debounce[event.path] = debounce(seed, 30 * 1000)
-      file_debounce[event.path](event.path)
-    } else if (event.event == 'change') {
-      if (file_debounce[event.path])
-        file_debounce[event.path](event.path)
-    } else if (event.event == 'unlink') {
-      var deleted = false
-      for (let k in database) {
-        var v = database[k]
-        if (v.file == event.path) {
-          console.log(`remove ${v.file} ${v.torrent.infoHash}`)
-          delete database[k]
-          deleted = true
-        }
+  watch.watch(config.glob, {
+    interval: 5000,
+    binaryInterval: 10000,
+    awaitWriteFinish: true,
+  })
+  .on('add', path => {
+    file_debounce[path] = debounce(seed, 30 * 1000)
+    file_debounce[path](path)
+  })
+  .on('change', path => {
+    if (file_debounce[path])
+      file_debounce[path](event.path)
+  })
+  .on('unlink', path => {
+    var deleted = false
+    for (let k in database) {
+      var v = database[k]
+      if (v.file == path) {
+        console.log(`remove ${v.file} ${v.torrent.infoHash}`)
+        delete database[k]
+        deleted = true
       }
-      if (deleted) {
-        store_database()
-      }
+    }
+    if (deleted) {
+      store_database()
     }
   })
 
