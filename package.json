@@ -14,9 +14,9 @@
     "express": "",
     "glob": "",
     "minimist": "",
-    "xvfb": "",
     "chokidar": "",
-    "debounce": ""
+    "debounce": "",
+    "cookie-parser", ""
   },
   "devDependencies": {
     "json-loader": "",

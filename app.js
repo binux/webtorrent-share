@@ -131,9 +131,11 @@
 
   // HTTP server
   var express = require('express')
+  var cookieParser = require('cookie-parser')
   var app = express()
 
   app.use(express.static('./'))
+  app.use(cookieParser(config.glob))
 
   app.get('/files', (req, res) => {
     var files = []
@@ -164,6 +166,7 @@
     ]
     var torrent_file = parseTorrent.toTorrentFile(torrent)
 
+    res.cookie('torrent', infoHash, { httpOnly: true, signed: true })
     res.set('Content-Type', 'application/x-bittorrent')
     res.send(torrent_file)
   })
@@ -172,6 +175,10 @@
     var infoHash = req.params.infoHash
     if (database[infoHash] === undefined) {
       res.sendStatus(404)
+      return
+    }
+    if (!req.headers.range || !req.signedCookies.torrent) {
+      res.sendStatus(403)
       return
     }
 

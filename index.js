@@ -103,7 +103,7 @@
           var data = {
             mode: 1,
             stime: parseInt(inst.video.currentTime * 1000), 
-            text: inst.txtText.value
+            text: inst.txtText.value.trim()
           }
           if (!!!data.text) {
             return
