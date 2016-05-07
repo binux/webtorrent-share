@@ -22,6 +22,9 @@ Features
 Usage
 -----
 
+可能需要 node>=6.0
+may need node>=6.0
+
 ```
 npm install binux/webtorrent-share -g
 webtorrent-share [options] [glob]
