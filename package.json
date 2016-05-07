@@ -16,7 +16,7 @@
     "minimist": "",
     "xvfb": "",
     "gulp-watch": "",
-    "debounce", ""
+    "debounce": ""
   },
   "devDependencies": {
     "json-loader": "",

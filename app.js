@@ -57,6 +57,12 @@
     if (!fs.statSync(file).isFile()) {
       return
     }
+    try {
+      if (fs.statSync(file+'.aria2').isFile()) {
+        return
+      }
+    } catch(e) {
+    }
 
     if (database_cache[file] !== undefined) {
       var torrent = parseTorrent(new Buffer(database_cache[file]))
@@ -99,7 +105,7 @@
     events: ['add', 'change', 'unlink'],
   }, (event) => {
     if (event.event == 'add') {
-      file_debounce[event.path] = debounce(seed, 10 * 1000)
+      file_debounce[event.path] = debounce(seed, 30 * 1000)
       file_debounce[event.path](event.path)
     } else if (event.event == 'change') {
       if (file_debounce[event.path])
