@@ -14,7 +14,9 @@
     "express": "",
     "glob": "",
     "minimist": "",
-    "xvfb": ""
+    "xvfb": "",
+    "gulp-watch": "",
+    "debounce", ""
   },
   "devDependencies": {
     "json-loader": "",

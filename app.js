@@ -18,13 +18,15 @@
   var createTorrent = require('create-torrent')
   var parseTorrent = require('parse-torrent')
   var argv = require('minimist')(process.argv.slice(2))
+  var watch = require('gulp-watch')
+  var debounce = require('debounce')
 
 	var database = {}
 
   try {
     var database_cache = JSON.parse(fs.readFileSync('database.json'))
   } catch(e) {
-    console.error(e)
+    //console.error(e)
     var database_cache = {}
   }
 
@@ -51,6 +53,36 @@
   console.log(config)
 
   // seeding
+  function seed(file) {
+    if (!fs.statSync(file).isFile()) {
+      return
+    }
+
+    if (database_cache[file] !== undefined) {
+      var torrent = parseTorrent(new Buffer(database_cache[file]))
+      console.log(`reloaded ${file} ${torrent.infoHash}`)
+
+      database[torrent.infoHash] = {
+        file: file,
+        torrent: torrent
+      }
+      store_database()
+    } else {
+      createTorrent(file, {
+        announceList: config.announce,
+      }, (err, torrent) => {
+        var torrent = parseTorrent(torrent)
+        console.log(`seeding ${file} ${torrent.infoHash}`)
+
+        database[torrent.infoHash] = {
+          file: file,
+          torrent: torrent,
+        }
+        store_database()
+      })
+    }
+  }
+
   glob(config.glob, (er, files) => {
     if (er) {
       console.error(er);
@@ -58,35 +90,34 @@
     }
 
     //files = files.slice(0, 1)
-    files.forEach((file) => {
-      if (!fs.statSync(file).isFile()) {
-        return
-      }
+    files.forEach(seed)
+  })
 
-      if (database_cache[file] !== undefined) {
-        var torrent = parseTorrent(new Buffer(database_cache[file]))
-        console.log(`reloaded ${file} ${torrent.infoHash}`)
-
-        database[torrent.infoHash] = {
-          file: file,
-          torrent: torrent
+  // watch
+  var file_debounce = {}
+  watch(config.glob, {
+    events: ['add', 'change', 'unlink'],
+  }, (event) => {
+    if (event.event == 'add') {
+      file_debounce[event.path] = debounce(seed, 10 * 1000)
+      file_debounce[event.path](event.path)
+    } else if (event.event == 'change') {
+      if (file_debounce[event.path])
+        file_debounce[event.path](event.path)
+    } else if (event.event == 'unlink') {
+      var deleted = false
+      for (let k in database) {
+        var v = database[k]
+        if (v.file == event.path) {
+          console.log(`remove ${v.file} ${v.torrent.infoHash}`)
+          delete database[k]
+          deleted = true
         }
-        store_database()
-      } else {
-        createTorrent(file, {
-          announceList: config.announce,
-        }, (err, torrent) => {
-          var torrent = parseTorrent(torrent)
-          console.log(`seeding ${file} ${torrent.infoHash}`)
-
-          database[torrent.infoHash] = {
-            file: file,
-            torrent: torrent,
-          }
-          store_database()
-        })
       }
-    })
+      if (deleted) {
+        store_database()
+      }
+    }
   })
 
   // HTTP server
