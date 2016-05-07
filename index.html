@@ -31,6 +31,7 @@
       <ul>
         <li v-for="file in files">
           <a v-link="{ name: 'video', params: { infohash: file.infoHash } }">{{ file.name }}</a>
+          <span style="float: right">{{ file.length | smart-file-size }}</span>
         </li>
       </ul>
     </script>
@@ -42,17 +43,22 @@
       </p>
       <div v-show="torrent">
       <dl>
+        <h2>{{ torrent.files[0].name }}</h2>
+
         <dt>infoHash</dt>
         <dd><a href="{{ torrent.magnetURI }}">{{ torrent.infoHash }}</a></dd>
 
         <dt>downloaded</dt>
         <dd>{{ torrent.downloaded | smart-file-size }}@{{ downloadSpeed | smart-file-size }}/s FROM {{ torrent.numPeers }}conn ({{ (torrent.progress * 100).toFixed(1) }}%)</dd>
+        <dd v-show="download_link"><a id="save-link" href="{{ download_link }}" download="{{ torrent.files[0].name }}">save</a></dd>
 
         <dt>timeRemaining</dt>
         <dd>{{ (timeRemaining / 1000).toFixed(0) }}s</dd>
 
         <dt>uploaded</dt>
         <dd>{{ torrent.uploaded | smart-file-size }}@{{ uploadSpeed | smart-file-size }}/s</dd>
+
+        <p></p>
 
         <div id=video-view></div>
       </div>

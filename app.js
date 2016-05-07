@@ -54,6 +54,7 @@
 
   // seeding
   function seed(file) {
+    file = path.resolve(file)
     if (!fs.statSync(file).isFile()) {
       return
     }
@@ -102,8 +103,8 @@
   // watch
   var file_debounce = {}
   watch.watch(config.glob, {
-    interval: 5000,
-    binaryInterval: 10000,
+    persistent: false,
+    ignoreInitial: true,
     awaitWriteFinish: true,
   })
   .on('add', path => {

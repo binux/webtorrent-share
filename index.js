@@ -143,7 +143,7 @@
 
       file.renderTo(inst.video, cb)
     } else {
-      file.renderTo(elem, cb)
+      file.appendTo(elem, cb)
     }
   }
 
@@ -168,6 +168,7 @@
     init: function() {
       this.$http.get('/config').then(function(response) {
         this.$set('glob', response.data.glob)
+        document.title = response.data.glob
         announce = response.data.announce
       })
     }
@@ -198,6 +199,7 @@
         downloadSpeed: 0, // it's a getter in torrent, which cannot update UI
         uploadSpeed: 0,
         timeRemaining: 0/0,
+        download_link: null,
       }
     },
     init: function() {
@@ -208,17 +210,22 @@
         announce: announce,
       }, (torrent) => {
         self.$set('torrent', torrent)
-        torrent.files.forEach(function(file) {
-          renderTo(file, '#video-view', function(err) {
-            if (err) console.error(err)
-          })
+        document.title = torrent.files[0].name
+
+        renderTo(torrent.files[0], '#video-view', function(err) {
+          if (err) console.error(err)
         })
-        torrent.on('download', function() {
+        torrent.on('download', () => {
           self.$set('downloadSpeed', torrent.downloadSpeed)
           self.$set('timeRemaining', torrent.timeRemaining)
         })
-        torrent.on('upload', function() {
+        torrent.on('upload', () => {
           self.$set('uploadSpeed', torrent.uploadSpeed)
+        })
+        torrent.on('done', () => {
+          torrent.files[0].getBlobURL((err, url) => {
+            self.$set('download_link', url)
+          })
         })
       })
     },
