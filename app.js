@@ -109,12 +109,14 @@
     awaitWriteFinish: true,
   })
   .on('add', path => {
-    file_debounce[path] = debounce(seed, 30 * 1000)
+    if (!file_debounce[path])
+      file_debounce[path] = debounce(seed, 30 * 1000)
     file_debounce[path](path)
   })
   .on('change', path => {
-    if (file_debounce[path])
-      file_debounce[path](path)
+    if (!file_debounce[path])
+      file_debounce[path] = debounce(seed, 30 * 1000)
+    file_debounce[path](path)
   })
   .on('unlink', path => {
     var deleted = false
