@@ -53,7 +53,7 @@
 
     <script type="x/template" id="filelist-template">
       <ul>
-        <li v-for="file in files">
+        <li v-for="file in files | orderBy 'name'">
           <a v-link="{ name: 'video', params: { infohash: file.infoHash } }">{{ file.name }}</a>
           <span class="size">{{ file.length | smart-file-size }}</span>
         </li>
