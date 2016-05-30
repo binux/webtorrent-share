@@ -74,13 +74,18 @@
         file: file,
         torrent: torrent
       }
-      store_database()
     } else {
       createTorrent(file, {
         announceList: config.announce,
       }, (err, torrent) => {
         var torrent = parseTorrent(torrent)
         console.log(`seeding ${file} ${torrent.infoHash}`)
+
+        // remove old item when file changed
+        for (let k in database) {
+          if (database[k].file == file)
+            delete database[k]
+        }
 
         database[torrent.infoHash] = {
           file: file,
@@ -100,6 +105,8 @@
     //files = files.slice(0, 1)
     files.forEach(seed)
   })
+  store_database()
+  delete database_cache
 
   // watch
   var file_debounce = {}
