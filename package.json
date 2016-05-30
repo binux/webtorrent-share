@@ -1,7 +1,7 @@
 {
   "name": "webtorrent-share",
   "description": "share files via webtorrent",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "author": {
     "name": "Binux",
     "email": "roy@binux.me",
