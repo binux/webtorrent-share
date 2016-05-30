@@ -104,9 +104,9 @@
 
     //files = files.slice(0, 1)
     files.forEach(seed)
+    store_database()
+    database_cache = {}
   })
-  store_database()
-  database_cache = {}
 
   // watch
   var file_debounce = {}
