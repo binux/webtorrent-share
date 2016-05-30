@@ -106,7 +106,7 @@
     files.forEach(seed)
   })
   store_database()
-  delete database_cache
+  database_cache = {}
 
   // watch
   var file_debounce = {}
