@@ -123,6 +123,7 @@
       inst.video.addEventListener('loadedmetadata', function() {
         document.querySelector('#video-view .ABP-Unit').style.width = '' + inst.video.videoWidth + 'px'
         document.querySelector('#video-view .ABP-Unit').style.height = '' + (inst.video.videoHeight + inst.txtText.clientHeight + inst.barHitArea.clientHeight) + 'px'
+        document.querySelector('#video-view .ABP-Video video').controls = true;
         inst.cmManager.setBounds()
       })
 
